@@ -1,0 +1,39 @@
+name: Update profile trophy SVG
+
+on:
+  schedule:
+    - cron: "31 2 * * 1"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  update-trophy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out trophy service
+        uses: actions/checkout@v4
+
+      - name: Set up Deno
+        uses: denoland/setup-deno@v1
+        with:
+          deno-version: 1.44.4
+
+      - name: Generate ZaccyDreamer trophies
+        env:
+          GITHUB_TOKEN1: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN2: ${{ secrets.GITHUB_TOKEN }}
+        run: deno run --allow-net --allow-env --allow-read --allow-write ./render_svg.ts ZaccyDreamer ./assets/trophy.svg dark_dimmed
+
+      - name: Publish updated SVG
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add assets/trophy.svg
+          if git diff --cached --quiet; then
+            echo "Trophy SVG is unchanged."
+          else
+            git commit -m "chore: update profile trophy SVG"
+            git push
+          fi

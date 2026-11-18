@@ -37,8 +37,8 @@ async function main() {
   const userInfo = userInfoOrError as any;
 
   const panelSize = 115;
-  const maxRow = 10;
-  const maxColumn = -1; // auto
+  const maxRow = 2;
+  const maxColumn = 4;
   const marginWidth = 10;
   const marginHeight = 10;
   const noBackground = false;
